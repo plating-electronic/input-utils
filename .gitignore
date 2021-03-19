@@ -17,3 +17,4 @@ input-recv
 input-send
 lsinput
 *.o
+build/
