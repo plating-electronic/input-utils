@@ -15,11 +15,33 @@ project(input-utils VERSION 1.0)
 include(GNUInstallDirs)
 
 #=======================================================================
+# generate headers
+#=======================================================================
+
+set(TYPE_LIST EV REL ABS MSC LED SND REP KEY BTN SW BUS)
+set(GENERATED_HEADERS EV.h REL.h ABS.h MSC.h LED.h SND.h REP.h KEY.h BTN.h SW.h BUS.h)
+
+foreach(TYPE IN LISTS TYPE_LIST)
+
+    add_custom_command(
+        OUTPUT ${TYPE}.h
+        COMMAND ${CMAKE_SOURCE_DIR}/name.sh ${TYPE} > ${CMAKE_CURRENT_BINARY_DIR}/${TYPE}.h
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
+
+endforeach(TYPE)
+
+#=======================================================================
 # libs
 #=======================================================================
 
 add_library(input OBJECT
     input.c
+    ${GENERATED_HEADERS}
+)
+
+target_include_directories(input PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 add_library(tcp OBJECT
